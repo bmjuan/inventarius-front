@@ -1,7 +1,6 @@
 <div class="container">
-    <h1>Añadir</h1>
-    <div [hidden]="submitted">
-      <form (ngSubmit)="onSubmit()" #itemForm="ngForm">
+    <h1>{{edit()}}</h1>
+      <form #itemForm="ngForm">
       <div class="form-group">
         <label for="name">Nombre</label>
         <input type="text" class="form-control" id="name"  
@@ -57,35 +56,11 @@
         <label for="expiricyDate">Fecha de caducidad</label>
         <datepicker [(ngModel)]="model.expiricyDate" [minDate]="minDate" [showWeeks]="true" [dateDisabled]="dateDisabled"
         id="expiricyDate" [(ngModel)]="model.expiricyDate" name="expiricyDate"></datepicker>
-        <!--<datepicker [(ngModel)]="model.expiricyDate" [viewFormat]="'DD/MM/YYYY'" [modelFormat]="'YYYY-MM-DD'"  [id]="'expiricyDate'" [label]="'Fecha de caducidad'"></datepicker>-->
       </div>
 
-        <button type="submit" class="btn btn-success" [disabled]="!itemForm.form.valid">{{edit()}}</button>
+        <button type="submit" (click)="onSubmit()"class="btn btn-success" [disabled]="!itemForm.form.valid">{{edit()}}</button>
         <button type="button" class="btn btn-default" (click)="newItem(); itemForm.reset()">Nuevo Item</button>
-        <button [hidden]= "!isEdit"type="button" class="btn btn-default" (click)="goHome(); itemForm.reset()">Cancel</button>
+        <button [hidden]= "!isEdit" type="button" class="btn btn-default" (click)="goHome(); itemForm.reset()">Cancel</button>
     </form>
-    </div>
-
-   <!-- <div [hidden]="!submitted">
-    <h2>You submitted the following:</h2>
-    <div class="row">
-      <div class="col-xs-3">Nombre</div>
-      <div class="col-xs-9  pull-left"> {{ model.name }}</div>
-    </div>
-    <div class="row">
-      <div class="col-xs-3">Descripción</div>
-      <div class="col-xs-9 pull-left"> {{ model.description }}</div>
-    </div>
-    <div class="row">
-      <div class="col-xs-3">Ubitación</div>
-      <div class="col-xs-9 pull-left"> {{ model.location }}</div>
-    </div>
-     <div class="row">
-      <div class="col-xs-3">Tipo</div>
-      <div class="col-xs-9 pull-left"> {{ model.type }}</div>
-    </div>
-    <br>
-    <button class="btn btn-primary" (click)="submitted=false">Editar</button>
-  </div>-->
 </div>
 

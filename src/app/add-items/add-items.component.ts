@@ -27,10 +27,10 @@ export class AddItemsComponent implements OnInit {
       private route: ActivatedRoute,
       private router: Router,
       private sharedData: SharedData,
-      private helper: Helper ) {
-      }
+      private helper: Helper ) { }
 
   ngOnInit() {
+    console.info('In add item ngOnInit');
     this.types = Constants.TYPES;
     this.sizes = Constants.SIZES;
     this.submitted = false;
@@ -46,15 +46,21 @@ export class AddItemsComponent implements OnInit {
       this.isEdit = true;
     }
   }
- 
+
   edit() {
-    return this.isEdit ? 'Añadir' : 'Actualizar';
+    return !this.isEdit ? 'Añadir' : 'Actualizar';
+  }
+
+  newItem() {
+    this.sharedData.removeCurrentItem();
+    this.model = new Item('', 0, '');
+    this.router.navigate(['/addItem']);
+    this.isEdit = false;
   }
   onSubmit() {
-    if(!this.isEdit) {
+    if (!this.isEdit) {
       this.itemsService.create(this.model)
       .then(() =>  {
-        console.info('It was ok!!!');
         this.submitted = true;
         this.goHome();
       });
@@ -65,21 +71,18 @@ export class AddItemsComponent implements OnInit {
       });
     }
   }
-  newHero() {
-    this.model = new Item('', 0, '');
+
+  showSize() {
+    return this.model.type > 0 && this.model.type < 2;
   }
 
- showSize() {
-   return this.model.type === 1;
- }
+  showQuantity() {
+    return this.model.type > 0 && this.model.type < 4;
+  }
 
-showQuantity() {
-   return this.model.type > 0 && this.model.type < 4;
- }
-
- showExpirationDate() {
-   return this.model.type === 2 || this.model.type === 3;
- }
+  showExpirationDate() {
+    return this.model.type > 1 && this.model.type < 4;
+  }
 
   goHome(): void {
    this.router.navigate(['/']);

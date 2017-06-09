@@ -1,45 +1,75 @@
+<div class="container">
 <div style="margin:60px;">
-    <button type="button" class="btn btn-default" (click)="annadirItem()"> Añadir </button>
+    <button type="button" class="btn btn-primary" (click)="annadirItem()"> Añadir </button>
 </div>
-<div style="margin: auto; max-width: 1000px; margin: 50px;">
-    <data-table id="items-grid"
-        headerTitle="Inventario"
-        [items]="items"
-        [itemCount]="itemCount"
-        (reload)="reloadItems($event)"
-        (rowDoubleClick)="rowDoubleClick($event)"
-        [rowTooltip]="rowTooltip"
-        >
-        <data-table-column
-            [property]="'name'"
-            [header]="'Nombre'"
-            [sortable]="true"
-            [resizable]="true">
-        </data-table-column>
-        <data-table-column
-            property="typeLiteral"
-            header="Tipo"
-            width="150px">
-        </data-table-column>
-        <data-table-column
-            [header]="'Editar'"
-            [width]="100"
-            [resizable]="true">
-            <template #dataTableCell let-item="item">
-                <button type="button" class="btn btn-info" (click)="editItem(item)"> Editar </button>
-            </template>
-        </data-table-column>
-        <data-table-column
-            [header]="'Eliminar'"
-            [width]="100"
-            [resizable]="true">
-            <template #dataTableHeader let-item="item">
-                <span style="color: rgb(232, 0, 0)">Eliminar</span>
-            </template>
-            <template #dataTableCell let-item="item">
-                <button type="button" class="btn btn-danger" (click)="removeItem(item)"> Eliminar </button>
-                <!--<span class="glyphicon glyphicon-remove" (ngClick)="removeItem(item)"></span>-->
-            </template>
-        </data-table-column>
-    </data-table>
+<!--<div class="row">
+    <label class="col-xs-12 label-control">Sort by</label>
+</div>
+<div class="col-xs-6">
+    <div class="row">
+        <select class="form-control input-sm" [(ngModel)]="sortBy">
+            <option ngValue="name">Nombre</option>
+            <option ngValue="quantity">Cantidad</option>
+            <option ngValue="type">Tipo</option>
+        </select>
+    </div>
+</div>
+<div class="col-xs-6">
+    <div class="row">
+        <select class="form-control input-sm" [(ngModel)]="sortOrder">
+            <option ngValue="asc">Ascending</option>
+            <option ngValue="desc">Descending</option>
+            <option ngValue="badValue">Bad value</option>
+        </select>
+    </div>
+</div>-->
+
+    <table class="table table-striped"  #mf="mfDataTable" [mfRowsOnPage]="5"
+    [mfData]="items | dataFilter : filterQuery" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+    <thead>
+        <tr>
+            <th colspan="6">
+                Filter by name:
+                <input class="form-control" [(ngModel)]="filterQuery"/>
+            </th>
+        </tr>
+    <tr>
+        <th style="width: 20%">
+            <mfDefaultSorter by="name">Nombre</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+            <mfDefaultSorter by="quantity">Cantidad</mfDefaultSorter>
+        </th>
+        <th style="width: 10%">
+            <mfDefaultSorter by="type">Tipo</mfDefaultSorter>
+        </th>
+        <th style="width: 20%">
+            <mfDefaultSorter>Detail</mfDefaultSorter>
+        </th>
+        <th style="width: 20%">
+            <mfDefaultSorter>Editar</mfDefaultSorter>
+        </th>
+        <th style="width: 20%">
+            <mfDefaultSorter>Eliminar</mfDefaultSorter>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of mf.data">
+        <td>{{item.name}}</td>
+        <td>{{item.quantity}}</td>
+        <td class="text-right">{{item.typeLiteral}}</td>
+        <td><button type="button" class="btn btn-primary" (click)="detailItem(item)"> Detail </button></td>
+        <td><button type="button" class="btn btn-warning" (click)="editItem(item)"> Editar </button></td>
+        <td><button type="button" class="btn btn-danger" (click)="removeItem(item)"> Eliminar </button></td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="6">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+        </td>
+    </tr>
+    </tfoot>
+</table>
 </div>

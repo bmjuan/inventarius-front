@@ -14,6 +14,6 @@ export class SharedData {
   }
 
   removeCurrentItem() {
-      this.sharedItem = null;
+      this.sharedItem = undefined;
   }
 }

@@ -5,6 +5,9 @@ import { DataTableResource } from 'angular-2-data-table';
 import { Constants } from '../helpers/constants';
 import { Helper } from '../helpers/helper';
 import { SharedData } from '../services/pass-data.service';
+import { DialogService } from 'ng2-bootstrap-modal';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+
 @Component({
   selector: 'app-items-list',
   providers: [ItemsService],
@@ -13,18 +16,29 @@ import { SharedData } from '../services/pass-data.service';
 })
 export class ItemsListComponent implements OnInit {
   items = [];
-  itemCount = 0;
+  itemCount: number;
+  filterQuery:string;
+  rowsOnPage:number;
+  sortBy:string;
+  sortOrder:string;
 
   constructor(private itemsService: ItemsService,
       private route: ActivatedRoute,
       private router: Router,
       private helper: Helper,
-      private sharedData: SharedData
-      ) { 
+      private sharedData: SharedData,
+      private dialogService: DialogService
+      ) {
+          this.sharedData.removeCurrentItem();
       }
 
     ngOnInit() {
-     this.loadItems({});
+        this.itemCount = 0;
+        this.filterQuery = '';
+        this.rowsOnPage = 5;
+        this.sortBy = 'name';
+        this.sortOrder = 'asc';
+        this.loadItems({});
     }
 
     loadItems(params) {
@@ -37,26 +51,44 @@ export class ItemsListComponent implements OnInit {
     reloadItems(params) {
      this.loadItems(params);
     }
+    
     editItem(item) {
-        this.sharedData.setCurrentItem(item);    
+        this.sharedData.setCurrentItem(item);
         this.router.navigate(['/addItem']);
     }
 
    removeItem(item) {
-        alert('Remove Item ');
-        this.itemsService.delete(item).then(result => {
-               this.loadItems({});
-            });
+        this.showConfirm(item);
     }
 
     annadirItem() {
-        alert('Add Item ');
         this.router.navigate(['/addItem']);
     }
-    rowDoubleClick(rowEvent) {
-        alert('Double clicked: ' + rowEvent.row.item.name);
-        this.router.navigate(['/items', rowEvent.row.item.id]);
+
+    detailItem(item) {
+        this.sharedData.setCurrentItem(item);
+        this.router.navigate(['/items', item.id]);
     }
 
+    toInt(num: string) {
+        return +num;
+    }
+
+
     rowTooltip(item) { return item.type; }
+
+    showConfirm(item) {
+        let disposable = this.dialogService.addDialog(ConfirmDialogComponent, {
+            title: 'Eliminar',
+            message: '¿Estás seguro de querer eliminar este elemento?'})
+            .subscribe((isConfirmed)=>{
+                //We get dialog result
+                if(isConfirmed) {
+                    alert('accepted');
+                    this.itemsService.delete(item.id).then(result => {
+                        this.loadItems({});
+                    });
+                }
+            });
+    }
 }
